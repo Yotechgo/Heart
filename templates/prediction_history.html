@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History - Heart Disease Prediction</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #e63946 0%, #833ab4 100%);
+            --dark-bg: #0f0c1b;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0c1b !important;
+            color: #f1f1f5 !important;
+            background: radial-gradient(circle at top right, rgba(131, 58, 180, 0.15), transparent 50%),
+                        radial-gradient(circle at bottom left, rgba(230, 57, 70, 0.12), transparent 50%) !important;
+            padding-top: 100px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+        }
+
+        h2, h3, h4, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Navbar Customization */
+        .navbar-custom {
+            background-color: rgba(15, 12, 27, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: #151226 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        /* Custom Buttons */
+        .btn-outline-custom {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e0;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-custom:hover, .btn-outline-custom.active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        .btn-outline-danger-custom {
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            color: #f87171;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-danger-custom:hover, .btn-outline-danger-custom.active {
+            background: rgba(230, 57, 70, 0.15);
+            border-color: #e63946;
+            color: #fff;
+        }
+
+        .btn-outline-success-custom {
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: #34d399;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-success-custom:hover, .btn-outline-success-custom.active {
+            background: rgba(52, 211, 153, 0.15);
+            border-color: #10b981;
+            color: #fff;
+        }
+
+        .btn-gradient-primary {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+            color: #fff;
+        }
+
+        /* Tables Customization */
+        .table-custom {
+            color: #e2e8f0;
+            border-color: rgba(255, 255, 255, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .table-custom th {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .table-custom td {
+            background-color: transparent !important;
+            color: #cbd5e0;
+            vertical-align: middle;
+        }
+
+        .table-custom tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background-color 0.2s;
+        }
+
+        .table-custom tr:hover {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+        }
+
+        /* Risk Badges */
+        .badge-risk-high {
+            background-color: rgba(230, 57, 70, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+
+
+        .badge-risk-low {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Pagination Styling */
+        .pagination-custom .page-link {
+            background-color: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cbd5e0;
+            padding: 10px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-custom .page-link:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .pagination-custom .page-item.active .page-link {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .pagination-custom .page-item.disabled .page-link {
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.04);
+            color: #718096;
+        }
+
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 30px 0 0 0;
+            margin-top: 40px;
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        /* Modal Customization */
+        .modal-content-custom {
+            background-color: #151226 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px !important;
+            color: #f1f1f5 !important;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header-custom {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 20px 25px !important;
+        }
+
+        .modal-footer-custom {
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 15px 25px !important;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .patient-link {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+        .patient-link:hover {
+            opacity: 0.8;
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'homepage' %}">
+                <i class="fa-solid fa-heart-pulse me-2"></i>Heart Disease Prediction
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link me-3" href="{% url 'homepage' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link me-3" href="{% url 'predict_heart_disease' %}">Risk Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active me-3" href="{% url 'prediction_history' %}">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text me-3 text-light">
+                            <i class="fa-solid fa-user-circle me-1"></i>Hi, {{ user.username }}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- History Page Content -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-11 col-lg-12">
+                
+                <!-- History Container -->
+                <div class="glass-card">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                        <h2 class="text-white mb-0"><i class="fa-solid fa-clock-rotate-left text-danger me-2"></i>Evaluation Records</h2>
+                        
+                        <!-- Filter Tabs -->
+                        <div class="d-flex gap-2">
+                            <a href="?risk=all" class="btn-outline-custom {% if risk_filter == 'all' %}active{% endif %}">
+                                <i class="fa-solid fa-list me-1"></i>All
+                            </a>
+                            <a href="?risk=high" class="btn-outline-danger-custom {% if risk_filter == 'high' %}active{% endif %}">
+                                <i class="fa-solid fa-circle-radiation me-1"></i>High Risk
+                            </a>
+                            <a href="?risk=low" class="btn-outline-success-custom {% if risk_filter == 'low' %}active{% endif %}">
+                                <i class="fa-solid fa-circle-check me-1"></i>Low Risk
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Records Table -->
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Date</th>
+                                    <th>Patient Name</th>
+                                    <th>Age</th>
+                                    <th>Sex</th>
+                                    <th>CP Type</th>
+                                    <th>Cholesterol</th>
+                                    <th>Max Heart Rate</th>
+                                    <th>Diagnosis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in page_obj %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ record.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td class="text-white fw-medium">
+                                        <a href="#" class="patient-link text-decoration-none"
+                                           data-bs-toggle="modal" data-bs-target="#patientDetailsModal"
+                                           data-name="{{ record.name|default:'N/A' }}"
+                                           data-age="{{ record.age|floatformat:0 }}"
+                                           data-sex="{% if record.sex == 1 %}Male{% else %}Female{% endif %}"
+                                           data-cp="{{ record.cp }}"
+                                           data-trestbps="{{ record.trestbps|floatformat:0 }}"
+                                           data-chol="{{ record.chol|floatformat:0 }}"
+                                           data-fbs="{% if record.fbs == 1 %}Yes{% else %}No{% endif %}"
+                                           data-restecg="{{ record.restecg }}"
+                                           data-thalach="{{ record.thalach|floatformat:0 }}"
+                                           data-exang="{% if record.exang == 1 %}Yes{% else %}No{% endif %}"
+                                           data-oldpeak="{{ record.oldpeak|floatformat:1 }}"
+                                           data-slope="{{ record.slope }}"
+                                           data-ca="{{ record.ca }}"
+                                           data-thal="{{ record.thal }}"
+                                           data-prediction="{{ record.prediction }}">
+                                            {{ record.name|default:"N/A" }}
+                                        </a>
+                                    </td>
+                                    <td>{{ record.age|floatformat:0 }}</td>
+                                    <td>
+                                        {% if record.sex == 1 %}
+                                            <span class="text-info"><i class="fa-solid fa-mars me-1"></i>Male</span>
+                                        {% else %}
+                                            <span class="text-danger"><i class="fa-solid fa-venus me-1"></i>Female</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ record.cp }}</td>
+                                    <td>{{ record.chol|floatformat:0 }} mg/dL</td>
+                                    <td>{{ record.thalach|floatformat:0 }} bpm</td>
+                                    <td>
+                                        {% if "High" in record.prediction %}
+                                            <span class="badge-risk-high">
+                                                <i class="fa-solid fa-triangle-exclamation me-1"></i>High Risk
+                                            </span>
+                                        {% else %}
+                                            <span class="badge-risk-low">
+                                                <i class="fa-solid fa-circle-check me-1"></i>Low Risk
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        <i class="fa-solid fa-folder-open mb-2 d-block" style="font-size: 2rem;"></i>
+                                        No evaluation history records match this criteria.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-custom justify-content-center mb-0">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?risk={{ risk_filter }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                        <a class="page-link" href="?risk={{ risk_filter }}&page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?risk={{ risk_filter }}&page={{ page_obj.next_page_number }}">&raquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+
+                    <!-- Quick Navigate Back -->
+                    <div class="mt-4 pt-3 border-top border-secondary text-center text-md-start">
+                        <a href="{% url 'predict_heart_disease' %}" class="btn btn-gradient-primary">
+                            <i class="fa-solid fa-heart-pulse me-2"></i>Evaluate New Patient
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <footer class="text-center">
+                        <p class="mb-0 text-muted">&copy; 2026 Heart Disease Prediction. Developed with Django, Random Forest, and Scikit-Learn.</p>
+                    </footer>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Details Modal -->
+    <div class="modal fade" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title font-outfit text-white" id="patientDetailsModalLabel">
+                        <i class="fa-solid fa-file-medical text-danger me-2"></i>Patient Clinical Record
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Dashboard Grid -->
+                    <div class="row g-3">
+                        <!-- Patient Identity Card -->
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Patient Name</div>
+                                <div class="detail-value text-white" id="modal-name">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">Age</div>
+                                <div class="detail-value" id="modal-age">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">Sex</div>
+                                <div class="detail-value" id="modal-sex">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis -->
+                        <div class="col-md-12">
+                            <div class="detail-item text-center py-3" id="modal-diag-card" style="border-radius: 12px;">
+                                <div class="detail-label">Evaluation Diagnosis</div>
+                                <div class="detail-value fs-4 font-outfit" id="modal-prediction">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Parameters Group 1: General Vitals -->
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Resting Blood Pressure</div>
+                                <div class="detail-value" id="modal-trestbps">-</div>
+                                <div class="small text-muted mt-1">mmHg</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Serum Cholesterol</div>
+                                <div class="detail-value" id="modal-chol">-</div>
+                                <div class="small text-muted mt-1">mg/dL</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Fasting Blood Sugar</div>
+                                <div class="detail-value" id="modal-fbs">-</div>
+                                <div class="small text-muted mt-1">&gt; 120 mg/dL</div>
+                            </div>
+                        </div>
+
+                        <!-- Parameters Group 2: Cardiac Metrics -->
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Chest Pain Type</div>
+                                <div class="detail-value" id="modal-cp">-</div>
+                                <div class="small text-muted mt-1">Scale 0 - 3</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Max Heart Rate</div>
+                                <div class="detail-value" id="modal-thalach">-</div>
+                                <div class="small text-muted mt-1">bpm</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Exercise Induced Angina</div>
+                                <div class="detail-value" id="modal-exang">-</div>
+                                <div class="small text-muted mt-1">Yes / No</div>
+                            </div>
+                        </div>
+
+                        <!-- Parameters Group 3: ECG & Stress -->
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">Rest ECG Results</div>
+                                <div class="detail-value" id="modal-restecg">-</div>
+                                <div class="small text-muted mt-1">Scale 0 - 2</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">ST Depression (Oldpeak)</div>
+                                <div class="detail-value" id="modal-oldpeak">-</div>
+                                <div class="small text-muted mt-1">Scale 0 - 10</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">ST Slope</div>
+                                <div class="detail-value" id="modal-slope">-</div>
+                                <div class="small text-muted mt-1">Scale 0 - 2</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="detail-item">
+                                <div class="detail-label">Major Vessels (ca)</div>
+                                <div class="detail-value" id="modal-ca">-</div>
+                                <div class="small text-muted mt-1">Fluoroscopy (0-3)</div>
+                            </div>
+                        </div>
+
+                        <!-- Thalassemia -->
+                        <div class="col-md-12">
+                            <div class="detail-item">
+                                <div class="detail-label">Thalassemia (thal)</div>
+                                <div class="detail-value" id="modal-thal">-</div>
+                                <div class="small text-muted mt-1">Perfusion defect scale (1 - 3)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-custom justify-content-center">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Close Record</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal Data Mapping script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patientModal = document.getElementById('patientDetailsModal');
+            patientModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                
+                var name = button.getAttribute('data-name');
+                var age = button.getAttribute('data-age');
+                var sex = button.getAttribute('data-sex');
+                var cp = button.getAttribute('data-cp');
+                var trestbps = button.getAttribute('data-trestbps');
+                var chol = button.getAttribute('data-chol');
+                var fbs = button.getAttribute('data-fbs');
+                var restecg = button.getAttribute('data-restecg');
+                var thalach = button.getAttribute('data-thalach');
+                var exang = button.getAttribute('data-exang');
+                var oldpeak = button.getAttribute('data-oldpeak');
+                var slope = button.getAttribute('data-slope');
+                var ca = button.getAttribute('data-ca');
+                var thal = button.getAttribute('data-thal');
+                var prediction = button.getAttribute('data-prediction');
+                
+                document.getElementById('modal-name').textContent = name;
+                document.getElementById('modal-age').textContent = age + ' years';
+                document.getElementById('modal-sex').textContent = sex;
+                document.getElementById('modal-cp').textContent = cp;
+                document.getElementById('modal-trestbps').textContent = trestbps + ' mmHg';
+                document.getElementById('modal-chol').textContent = chol + ' mg/dL';
+                document.getElementById('modal-fbs').textContent = fbs;
+                document.getElementById('modal-restecg').textContent = restecg;
+                document.getElementById('modal-thalach').textContent = thalach + ' bpm';
+                document.getElementById('modal-exang').textContent = exang;
+                document.getElementById('modal-oldpeak').textContent = oldpeak;
+                document.getElementById('modal-slope').textContent = slope;
+                document.getElementById('modal-ca').textContent = ca;
+                document.getElementById('modal-thal').textContent = thal;
+                
+                var predText = document.getElementById('modal-prediction');
+                var diagCard = document.getElementById('modal-diag-card');
+                predText.textContent = prediction;
+                
+                if (prediction.includes('High')) {
+                    predText.style.color = '#f87171';
+                    diagCard.style.background = 'rgba(230, 57, 70, 0.1)';
+                    diagCard.style.borderColor = 'rgba(230, 57, 70, 0.2)';
+                } else {
+                    predText.style.color = '#34d399';
+                    diagCard.style.background = 'rgba(16, 185, 129, 0.1)';
+                    diagCard.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

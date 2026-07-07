@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Risk Prediction - Heart Disease Prediction</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #e63946 0%, #833ab4 100%);
+            --dark-bg: #0f0c1b;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0c1b !important;
+            color: #f1f1f5 !important;
+            background: radial-gradient(circle at top right, rgba(131, 58, 180, 0.15), transparent 50%),
+                        radial-gradient(circle at bottom left, rgba(230, 57, 70, 0.12), transparent 50%) !important;
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        h2, h3, h4, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Navbar Customization */
+        .navbar-custom {
+            background-color: rgba(15, 12, 27, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: #151226 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        /* Custom Form Controls */
+        .form-label {
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .form-control-custom {
+            background-color: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            color: #000000 !important;
+            border-radius: 10px;
+            padding: 10px 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom::placeholder {
+            color: #718096 !important;
+        }
+
+        .form-control-custom:focus {
+            background-color: #ffffff !important;
+            border-color: #e63946 !important;
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.2) !important;
+            color: #000000 !important;
+        }
+
+        select.form-control-custom {
+            color: #000000 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            appearance: none;
+        }
+
+        select.form-control-custom option {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .btn-gradient-primary {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.5);
+            color: #fff;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-custom:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        /* Result Styles */
+        .result-box {
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid transparent;
+        }
+
+        .result-danger {
+            background: rgba(230, 57, 70, 0.15);
+            border-color: rgba(230, 57, 70, 0.3);
+            color: #f87171;
+        }
+
+        .result-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+        }
+
+        .result-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        .progress-custom {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            height: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        /* Tables Customization */
+        .table-custom {
+            color: #e2e8f0;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .table-custom th {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+
+        .table-custom td {
+            background-color: transparent !important;
+            color: #cbd5e0;
+        }
+
+        .table-custom tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 30px 0 0 0;
+            margin-top: 40px;
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        /* Parameter Risk Threshold Styles */
+        .parameter-card {
+            border-radius: 15px;
+            padding: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .parameter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .param-low {
+            border-left: 5px solid #10b981;
+            background: rgba(16, 185, 129, 0.03) !important;
+        }
+
+        .param-high {
+            border-left: 5px solid #e63946;
+            background: rgba(230, 57, 70, 0.03) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'homepage' %}">
+                <i class="fa-solid fa-heart-pulse me-2"></i>Heart Disease Prediction
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link me-3" href="{% url 'homepage' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active me-3" href="{% url 'predict_heart_disease' %}">Risk Prediction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link me-3" href="{% url 'prediction_history' %}">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text me-3 text-light">
+                            <i class="fa-solid fa-user-circle me-1"></i>Hi, {{ user.username }}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Predictor Page Content -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-9 col-lg-10">
+                
+                <!-- Main Glass Card Form -->
+                <div class="glass-card">
+                    <h2 class="text-center mb-4 text-white"><i class="fa-solid fa-heart-pulse text-danger me-2"></i>Heart Disease Risk Analysis</h2>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Full Name -->
+                        <div class="mb-4">
+                            <label class="form-label">Patient Full Name</label>
+                            <input type="text" name="name" class="form-control form-control-custom" placeholder="Enter patient name" required>
+                        </div>
+
+                        <!-- Form Parameters Grid -->
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <label class="form-label">Age (years) (1 - 120)</label>
+                                <input type="number" name="age" class="form-control form-control-custom" step="any" min="1" max="120" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Sex (Male/Female)</label>
+                                <select name="sex" class="form-control form-control-custom" required>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Chest Pain Type (0 - 3)</label>
+                                <input type="number" name="cp" class="form-control form-control-custom" min="0" max="3" required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Resting Blood Pressure (mmHg) (>= 50)</label>
+                                <input type="number" name="trestbps" class="form-control form-control-custom" min="50" max="300" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Serum Cholesterol (mg/dL) (>= 80)</label>
+                                <input type="number" name="chol" class="form-control form-control-custom" min="80" max="600" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Fasting Blood Sugar > 120 mg/dL (Yes/No)</label>
+                                <select name="fbs" class="form-control form-control-custom" required>
+                                    <option value="0">No (Fasting BS &le; 120)</option>
+                                    <option value="1">Yes (Fasting BS > 120)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Rest ECG Results (0 - 2)</label>
+                                <input type="number" name="restecg" class="form-control form-control-custom" min="0" max="2" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Max Heart Rate (thalach) (50 - 250)</label>
+                                <input type="number" name="thalach" class="form-control form-control-custom" min="50" max="250" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Exercise Induced Angina (Yes/No)</label>
+                                <select name="exang" class="form-control form-control-custom" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Oldpeak (ST Depression) (0 - 10)</label>
+                                <input type="number" name="oldpeak" step="any" class="form-control form-control-custom" min="0" max="10" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ST Slope (0 - 2)</label>
+                                <input type="number" name="slope" class="form-control form-control-custom" min="0" max="2" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Major Vessels (0 - 3)</label>
+                                <input type="number" name="ca" class="form-control form-control-custom" min="0" max="3" required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Thalassemia (1 - 3)</label>
+                                <input type="number" name="thal" class="form-control form-control-custom" min="1" max="3" required>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="text-center mt-5 d-flex justify-content-center gap-3">
+                            <button type="submit" class="btn btn-gradient-primary btn-lg">
+                                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Evaluate Risk
+                            </button>
+                            <a href="{% url 'prediction_history' %}" class="btn btn-outline-custom btn-lg">
+                                <i class="fa-solid fa-history me-2"></i>View History
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Prediction Result Overlay -->
+                    {% if prediction %}
+                        <div class="mt-4">
+                            {% if "High risk" in prediction %}
+                                <div class="result-box result-danger">
+                                    <h3><i class="fa-solid fa-circle-radiation me-2"></i>{{ prediction }}</h3>
+                                </div>
+                            {% else %}
+                                <div class="result-box result-success">
+                                    <h3><i class="fa-solid fa-circle-check me-2"></i>{{ prediction }}</h3>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Parameters Reference Card -->
+                <div class="glass-card">
+                    <h3 class="mb-4 text-white font-outfit text-center"><i class="fa-solid fa-circle-info text-info me-2"></i>Parameter Risk Guidelines & Interpretation</h3>
+                    
+                    <div class="row g-4">
+                        <!-- Low Risk Section -->
+                        <div class="col-12">
+                            <div class="parameter-card param-low">
+                                <h4 class="text-success font-outfit mb-3">
+                                    <i class="fa-solid fa-circle-check me-2"></i>Low Risk Parameters
+                                </h4>
+                                <p class="text-muted small">These parameters represent standard healthy ranges or trigger the automatic low-risk system override.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Parameter</th>
+                                                <th>Value / Range</th>
+                                                <th>Clinical Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Age</strong></td>
+                                                <td>&lt; 100 years</td>
+                                                <td>Baseline evaluation age under 100 years.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Resting BP (trestbps)</strong></td>
+                                                <td>&le; 120 mmHg</td>
+                                                <td>Normal resting systolic blood pressure. Values within this range indicate healthy blood vessels.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Serum Cholesterol (chol)</strong></td>
+                                                <td>&le; 200 mg/dL</td>
+                                                <td>Desirable total cholesterol level. Minimizes risk of arterial plaque buildup.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Fasting Blood Sugar (fbs)</strong></td>
+                                                <td>No (&le; 120 mg/dL)</td>
+                                                <td>Normal fasting glucose range. Indicates no active hyperglycemic stress.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Exercise Angina (exang)</strong></td>
+                                                <td>No (0)</td>
+                                                <td>No chest pain or constriction brought on by physical exercise.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>ST Depression (oldpeak)</strong></td>
+                                                <td>0.0 - 3.0</td>
+                                                <td>Minimal ST segment depression. Indicates normal cardiac electrical activity under stress.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Major Vessels (ca)</strong></td>
+                                                <td>0</td>
+                                                <td>No coronary vessels showing stenosis/blockage under fluoroscopy.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Chest Pain (cp)</strong></td>
+                                                <td>0</td>
+                                                <td>Asymptomatic chest pain (no subjective anginal symptoms).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Rest ECG (restecg)</strong></td>
+                                                <td>0</td>
+                                                <td>Normal electrocardiographic reading at rest.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Max Heart Rate (thalach)</strong></td>
+                                                <td>&gt; 150 bpm</td>
+                                                <td>Excellent cardiac performance and cardiovascular fitness.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>ST Slope</strong></td>
+                                                <td>2</td>
+                                                <td>Upsloping ST segment (typical healthy response to exercise exertion).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Thalassemia (thal)</strong></td>
+                                                <td>1</td>
+                                                <td>Normal blood flow perfusion scan without defects.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- High Risk Section -->
+                        <div class="col-12">
+                            <div class="parameter-card param-high">
+                                <h4 class="text-danger font-outfit mb-3">
+                                    <i class="fa-solid fa-circle-radiation me-2"></i>High Risk Parameters
+                                </h4>
+                                <p class="text-muted small">Parameters representing critical threat levels or triggering the automatic high-risk system override.</p>
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-hover table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Parameter</th>
+                                                <th>Value / Range</th>
+                                                <th>Clinical Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Resting BP (trestbps)</strong></td>
+                                                <td>&ge; 180 mmHg</td>
+                                                <td>Hypertensive crisis level. Triggers automatic high-risk classification.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Serum Cholesterol (chol)</strong></td>
+                                                <td>&ge; 260 mg/dL</td>
+                                                <td>Severely high cholesterol. Associated with extensive atherosclerosis. Triggers high-risk override.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Exercise Angina (exang)</strong></td>
+                                                <td>Yes (1)</td>
+                                                <td>Chest pain/angina induced directly by exercise. Highly diagnostic of heart disease. Triggers high-risk override.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>ST Depression (oldpeak)</strong></td>
+                                                <td>6.0 - 10.0</td>
+                                                <td>Severe ST depression indicating significant myocardial ischemia. Triggers high-risk override.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Major Vessels (ca)</strong></td>
+                                                <td>&ge; 2</td>
+                                                <td>Multiple major blood vessels blocked. High urgency condition. Triggers high-risk override.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Chest Pain (cp)</strong></td>
+                                                <td>2 - 3</td>
+                                                <td>Typical severe angina chest pain or non-anginal pain (higher disease correlation).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Rest ECG (restecg)</strong></td>
+                                                <td>2</td>
+                                                <td>Left ventricular hypertrophy (severe wave abnormality or strain).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Max Heart Rate (thalach)</strong></td>
+                                                <td>&lt; 120 bpm</td>
+                                                <td>Poor cardiovascular exertion capacity under stress.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>ST Slope</strong></td>
+                                                <td>0</td>
+                                                <td>Downsloping ST segment slope (strong marker of active ischemia).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Thalassemia (thal)</strong></td>
+                                                <td>3 (Reversible defect)</td>
+                                                <td>Indicates temporary loss of blood flow to cardiac muscle during exertion.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <footer class="text-center mt-4">
+                        <p class="mb-0 text-muted">&copy; 2026 Heart Disease Prediction. Developed with Django, Random Forest, and Scikit-Learn.</p>
+                    </footer>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

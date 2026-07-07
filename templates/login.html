@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Heart Disease Prediction</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #e63946 0%, #833ab4 100%);
+            --dark-bg: #0f0c1b;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0c1b !important;
+            color: #f1f1f5 !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(131, 58, 180, 0.15), transparent 50%),
+                        radial-gradient(circle at bottom left, rgba(230, 57, 70, 0.12), transparent 50%) !important;
+            padding: 20px;
+        }
+
+        h2, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: #151226 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-header {
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .form-control-custom {
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            color: #000000 !important;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom::placeholder {
+            color: #718096 !important;
+        }
+
+        .form-control-custom:focus {
+            background: #ffffff !important;
+            border-color: #e63946 !important;
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.2) !important;
+            color: #000000 !important;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #cbd5e0;
+            margin-bottom: 8px;
+        }
+
+        .btn-gradient-primary {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+        }
+
+        .text-link {
+            color: #c77dff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .text-link:hover {
+            color: #e63946;
+        }
+
+        .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        .input-group-text-custom {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0aec0;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-control-custom.with-icon {
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Password Toggle Styles */
+        .password-toggle-btn {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            border-left: none !important;
+            background: #ffffff !important;
+            color: #718096 !important;
+            padding: 0 15px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: color 0.2s ease, background-color 0.2s ease !important;
+            z-index: 10 !important;
+        }
+        .password-toggle-btn:hover {
+            color: #e63946 !important;
+            background: #f8f9fa !important;
+        }
+        .password-toggle-group {
+            display: flex !important;
+            position: relative !important;
+            width: 100% !important;
+        }
+        .password-toggle-input {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            flex: 1 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card">
+        <div class="text-center">
+            <a href="{% url 'homepage' %}" class="brand-header text-decoration-none">
+                <i class="fa-solid fa-heart-pulse"></i> Heart Disease Prediction
+            </a>
+            <h4 class="mb-4 text-white font-outfit">Sign In to Platform</h4>
+        </div>
+
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    {% if 'success' in message.tags %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399;">
+                            <i class="fa-solid fa-circle-check me-2"></i>{{ message }}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(230, 57, 70, 0.15); border: 1px solid rgba(230, 57, 70, 0.3); color: #f87171;">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ message }}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Role Selection Toggle -->
+            <div class="mb-4 text-center">
+                <label class="form-label d-block mb-2 text-start">Login Role</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="role" id="role_user" value="user" checked autocomplete="off">
+                    <label class="btn btn-outline-danger w-50 py-2 border-end-0" for="role_user" style="border-radius: 10px 0 0 10px; font-weight: 600;">
+                        <i class="fa-solid fa-user me-2"></i>User Login
+                    </label>
+
+                    <input type="radio" class="btn-check" name="role" id="role_admin" value="admin" autocomplete="off">
+                    <label class="btn btn-outline-danger w-50 py-2" for="role_admin" style="border-radius: 0 10px 10px 0; font-weight: 600;">
+                        <i class="fa-solid fa-user-shield me-2"></i>Admin Login
+                    </label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text input-group-text-custom"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" name="username" class="form-control form-control-custom with-icon" placeholder="Enter username" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text input-group-text-custom"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" name="password" class="form-control form-control-custom with-icon" placeholder="Enter password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-gradient-primary">
+                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted mb-2">Don't have an account?</p>
+            <a href="{% url 'register' %}" class="text-link"><i class="fa-solid fa-user-plus me-1"></i>Create one now</a>
+        </div>
+        
+        <div class="text-center mt-3 border-top border-secondary pt-3">
+            <a href="{% url 'homepage' %}" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Homepage</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Password Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function addPasswordToggle(input) {
+                if (input.dataset.hasToggle === 'true') return;
+                input.dataset.hasToggle = 'true';
+
+                const parent = input.parentElement;
+                if (parent && parent.classList.contains('input-group')) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn password-toggle-btn';
+                    
+                    input.style.borderTopRightRadius = '0';
+                    input.style.borderBottomRightRadius = '0';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-eye';
+                    btn.appendChild(icon);
+                    parent.appendChild(btn);
+                    
+                    btn.addEventListener('click', function() {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fa-solid fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fa-solid fa-eye';
+                        }
+                    });
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'input-group password-toggle-group';
+                    
+                    input.parentNode.insertBefore(wrapper, input);
+                    wrapper.appendChild(input);
+                    input.classList.add('password-toggle-input');
+                    
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn password-toggle-btn';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-eye';
+                    btn.appendChild(icon);
+                    wrapper.appendChild(btn);
+                    
+                    btn.addEventListener('click', function() {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fa-solid fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fa-solid fa-eye';
+                        }
+                    });
+                }
+            }
+            document.querySelectorAll('input[type="password"]').forEach(addPasswordToggle);
+        });
+    </script>
+</body>
+</html>

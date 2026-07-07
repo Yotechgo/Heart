@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Heart Disease Prediction</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #e63946 0%, #833ab4 100%);
+            --dark-bg: #0f0c1b;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0c1b !important;
+            color: #f1f1f5 !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(131, 58, 180, 0.15), transparent 50%),
+                        radial-gradient(circle at bottom left, rgba(230, 57, 70, 0.12), transparent 50%) !important;
+            padding: 40px 20px;
+        }
+
+        h2, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: #151226 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-header {
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        /* Override style for Django auto-generated inputs */
+        form input[type="text"], 
+        form input[type="password"], 
+        form input[type="email"] {
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            color: #000000 !important;
+            border-radius: 10px;
+            padding: 12px 15px;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 5px;
+        }
+
+        form input[type="text"]:focus, 
+        form input[type="password"]:focus, 
+        form input[type="email"]:focus {
+            background: #ffffff !important;
+            border-color: #e63946 !important;
+            outline: none;
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.2) !important;
+            color: #000000 !important;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #cbd5e0;
+            margin-bottom: 0px;
+            font-size: 0.95rem;
+        }
+
+        .form-text {
+            color: #a0aec0 !important;
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        .ul-errors {
+            color: #f87171;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .btn-gradient-primary {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+        }
+
+        .text-link {
+            color: #c77dff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .text-link:hover {
+            color: #e63946;
+        }
+
+        .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        /* Password Toggle Styles */
+        .password-toggle-btn {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            border-left: none !important;
+            background: #ffffff !important;
+            color: #718096 !important;
+            padding: 0 15px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: color 0.2s ease, background-color 0.2s ease !important;
+            z-index: 10 !important;
+        }
+        .password-toggle-btn:hover {
+            color: #e63946 !important;
+            background: #f8f9fa !important;
+        }
+        .password-toggle-group {
+            display: flex !important;
+            position: relative !important;
+            width: 100% !important;
+        }
+        .password-toggle-input {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            flex: 1 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card">
+        <div class="text-center">
+            <a href="{% url 'homepage' %}" class="brand-header text-decoration-none">
+                <i class="fa-solid fa-heart-pulse"></i> Heart Disease Prediction
+            </a>
+            <h4 class="mb-4 text-white font-outfit">Create Account</h4>
+        </div>
+
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(230, 57, 70, 0.15); border: 1px solid rgba(230, 57, 70, 0.3); color: #f87171;">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ message }}
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="ul-errors">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-gradient-primary">
+                <i class="fa-solid fa-user-plus me-2"></i>Register & Login
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted mb-2">Already have an account?</p>
+            <a href="{% url 'login' %}" class="text-link"><i class="fa-solid fa-right-to-bracket me-1"></i>Sign In</a>
+        </div>
+        
+        <div class="text-center mt-3 border-top border-secondary pt-3">
+            <a href="{% url 'homepage' %}" class="text-muted text-decoration-none small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Homepage</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Password Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function addPasswordToggle(input) {
+                if (input.dataset.hasToggle === 'true') return;
+                input.dataset.hasToggle = 'true';
+
+                const parent = input.parentElement;
+                if (parent && parent.classList.contains('input-group')) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn password-toggle-btn';
+                    
+                    input.style.borderTopRightRadius = '0';
+                    input.style.borderBottomRightRadius = '0';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-eye';
+                    btn.appendChild(icon);
+                    parent.appendChild(btn);
+                    
+                    btn.addEventListener('click', function() {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fa-solid fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fa-solid fa-eye';
+                        }
+                    });
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'input-group password-toggle-group';
+                    
+                    input.parentNode.insertBefore(wrapper, input);
+                    wrapper.appendChild(input);
+                    input.classList.add('password-toggle-input');
+                    
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn password-toggle-btn';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-eye';
+                    btn.appendChild(icon);
+                    wrapper.appendChild(btn);
+                    
+                    btn.addEventListener('click', function() {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fa-solid fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fa-solid fa-eye';
+                        }
+                    });
+                }
+            }
+            document.querySelectorAll('input[type="password"]').forEach(addPasswordToggle);
+
+            // Password Requirements Script
+            function setupPasswordRequirements(input) {
+                if (input.dataset.hasRequirements === 'true') return;
+                const name = input.name || '';
+                if (name.includes('confirm') || name === 'password2') return; // Skip confirmation
+                input.dataset.hasRequirements = 'true';
+
+                const card = document.createElement('div');
+                card.className = 'password-requirements-card';
+                card.style.background = 'rgba(255, 255, 255, 0.03)';
+                card.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+                card.style.borderRadius = '12px';
+                card.style.padding = '15px';
+                card.style.marginTop = '10px';
+                card.style.display = 'none';
+
+                card.innerHTML = `
+                    <h6 style="color: #ffffff; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600;">Password Requirements:</h6>
+                    <ul style="list-style: none; padding-left: 0; margin-bottom: 0; font-size: 0.8rem; line-height: 1.6;">
+                        <li id="req-len" style="color: #a0aec0; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark me-2" style="color: #f87171;"></i>At least 8 characters</li>
+                        <li id="req-up" style="color: #a0aec0; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark me-2" style="color: #f87171;"></i>At least one uppercase letter (A-Z)</li>
+                        <li id="req-low" style="color: #a0aec0; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark me-2" style="color: #f87171;"></i>At least one lowercase letter (a-z)</li>
+                        <li id="req-num" style="color: #a0aec0; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark me-2" style="color: #f87171;"></i>At least one number (0-9)</li>
+                        <li id="req-spec" style="color: #a0aec0; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark me-2" style="color: #f87171;"></i>At least one special character (@$!%*?&)</li>
+                    </ul>
+                `;
+
+                const targetElement = input.closest('.input-group') || input;
+                targetElement.parentNode.insertBefore(card, targetElement.nextSibling);
+
+                const reqs = {
+                    len: card.querySelector('#req-len'),
+                    up: card.querySelector('#req-up'),
+                    low: card.querySelector('#req-low'),
+                    num: card.querySelector('#req-num'),
+                    spec: card.querySelector('#req-spec')
+                };
+
+                function updateRule(element, isOk) {
+                    const icon = element.querySelector('i');
+                    if (isOk) {
+                        element.style.color = '#34d399';
+                        icon.className = 'fa-solid fa-circle-check me-2';
+                        icon.style.color = '#34d399';
+                    } else {
+                        element.style.color = '#a0aec0';
+                        icon.className = 'fa-solid fa-circle-xmark me-2';
+                        icon.style.color = '#f87171';
+                    }
+                }
+
+                function checkPassword() {
+                    const val = input.value;
+                    updateRule(reqs.len, val.length >= 8);
+                    updateRule(reqs.up, /[A-Z]/.test(val));
+                    updateRule(reqs.low, /[a-z]/.test(val));
+                    updateRule(reqs.num, /[0-9]/.test(val));
+                    updateRule(reqs.spec, /[@$!%*?&]/.test(val));
+                }
+
+                input.addEventListener('focus', function() {
+                    card.style.display = 'block';
+                    checkPassword();
+                });
+
+                input.addEventListener('input', function() {
+                    card.style.display = 'block';
+                    checkPassword();
+                });
+
+                input.addEventListener('blur', function() {
+                    if (input.value === '') {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            const isLoginPage = window.location.pathname.includes('/login/');
+            if (!isLoginPage) {
+                document.querySelectorAll('input[type="password"]').forEach(setupPasswordRequirements);
+            }
+        });
+    </script>
+</body>
+</html>
